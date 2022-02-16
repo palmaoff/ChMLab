@@ -1,9 +1,12 @@
 from read_and_print import read_mtr, print_mtr, read_f, print_f
+import sys
 
 
 def main():
-	mtr = read_mtr("matrix.txt")
-	f = read_f("matrix.txt")
+	file = sys.argv[1]
+	# file = "matrix2.txt"
+	mtr = read_mtr(file)
+	f = read_f(file)
 	print_mtr(mtr, "\nmatrix:")
 	print(f)
 
@@ -17,7 +20,8 @@ def main():
 			return
 
 	# alg
-	alg(mtr, f, n - 1, 4)
+	alg(mtr, f, n - 1, int(sys.argv[2]) - 1)
+	# alg(mtr, f, n - 1, 4)
 
 	print_f(f, 'f:')
 
@@ -83,6 +87,19 @@ def alg(mtr, f, n, k):
 	r = mtr[k + 1][n - k]
 	mtr[k + 1][n - k] = 0
 	f[k + 1] -= r * f[k]
+
+	if k < n - k:
+		for i in range(k, n - k):
+			j = n - i
+			r = mtr[i + 1][j]
+			mtr[i + 1][j] = 0
+			f[i + 1] -= r * f[i]
+	elif k > n - k: # to do
+		for i in range(n - k, k, -1):
+			j = n - i
+			r = mtr[i - 1][j]
+			mtr[i - 1][j] = 0
+			f[i - 1] -= r * f[i]
 
 	for i in range(0, n + 1):
 		if i != n - k:
