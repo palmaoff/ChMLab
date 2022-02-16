@@ -39,3 +39,14 @@ def print_mtr(mtr,str):
 		for curr in line:
 			print("%.1f" % curr, end="\t")
 		print()
+
+def accuracy_f(mtr):
+	f = []
+
+	for line in mtr:
+		tmp = 0
+		for curr in line:
+			tmp += curr
+		f.append(tmp)
+	
+	return f
