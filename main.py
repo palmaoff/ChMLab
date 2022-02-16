@@ -142,6 +142,7 @@ def alg(mtr, f, f2, n, k):
 		f[i - 1] -= r * f[i]
 		f2[i - 1] -= r * f2[i]
 
+
 if __name__ == "__main__":
 	main()
 
