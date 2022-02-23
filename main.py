@@ -5,13 +5,13 @@ import sys
 
 def main():
 	file = sys.argv[1]
-	# file = "matrix2.txt"
+	# file = "matrix3.txt"
 	mtr = read_mtr(file)
 	f = read_f(file)
 	f2 = accuracy_f(mtr)
-	print_mtr(mtr, "\nmatrix:")
-	print(f)
-	print(f2)
+	# print_mtr(mtr, "\nmatrix:")
+	# print(f)
+	print_f(f2, 'f2:')
 
 	n = len(mtr)
 	m = len(mtr[0])
@@ -23,22 +23,24 @@ def main():
 			return
 
 	# alg
-	alg(mtr, f, f2, n - 1, int(sys.argv[2]) - 1)
-	# alg(mtr, f, f2, n - 1, 4)
+	# if alg(mtr, f, f2, n - 1, 6):
+	if alg(mtr, f, f2, n - 1, int(sys.argv[2]) - 1):
 
-	print_f(f, 'f:')
-	print_f(f2, 'f:')
+		# print_f(f, 'f:')
+		print_f(f2, 'f2:')
 
-	p = reduce(lambda a, b: a - 1 if (a - 1 > b - 1) else b - 1, f2)
+		p = reduce(lambda a, b: a - 1 if (a - 1 > b - 1) else b - 1, f2)
 
-	print()
-	print(p)
+		print()
+		print(p)
 
 
 def alg(mtr, f, f2, n, k):
 	for i in range(0, k):
 		j = n - i
 
+		if mtr[i][j] == 0:
+			return 0
 		r = 1 / mtr[i][j]
 		mtr[i][j] = 1
 		mtr[i][j - 1] *= r
@@ -67,6 +69,8 @@ def alg(mtr, f, f2, n, k):
 	for i in range(n, k, -1):
 		j = n - i
 
+		if mtr[i][j] == 0:
+			return 0
 		r = 1 / mtr[i][j]
 		mtr[i][j] = 1
 		mtr[i][j + 1] *= r
@@ -92,46 +96,51 @@ def alg(mtr, f, f2, n, k):
 			f[i - 1] -= r * f[i]
 			f2[i - 1] -= r * f2[i]
 
-	f[k] /= mtr[k][n - k]
-	f2[k] /= mtr[k][n - k]
+	# ?!
+	if mtr[k][n - k] == 0:
+		return 0
+	r = mtr[k][n - k]
 	mtr[k][n - k] = 1
+	if k != n - k:
+		mtr[k][k] /= r
+	f[k] /= r
+	f2[k] /= r
 
-	r = mtr[k - 1][n - k]
-	mtr[k - 1][n - k] = 0
-	f[k - 1] -= r * f[k]
-	f2[k - 1] -= r * f2[k]
+	print()
+	print_mtr(mtr, "\nmatrix:")
+	print(f2)
 
-	r = mtr[k + 1][n - k]
-	mtr[k + 1][n - k] = 0
-	f[k + 1] -= r * f[k]
-	f2[k + 1] -= r * f2[k]
+	# r = mtr[k - 1][n - k]
+	# mtr[k - 1][n - k] = 0
+	# f[k - 1] -= r * f[k]
+	# f2[k - 1] -= r * f2[k]
 
-	if k < n - k:
-		for i in range(k, n - k):
-			j = n - i
-			r = mtr[i + 1][j]
-			mtr[i + 1][j] = 0
-			f[i + 1] -= r * f[i]
-			f2[i + 1] -= r * f2[i]
-	elif k > n - k: # to do
-		for i in range(n - k, k, -1):
-			j = n - i
-			r = mtr[i - 1][j]
-			mtr[i - 1][j] = 0
-			f[i - 1] -= r * f[i]
-			f2[i - 1] -= r * f2[i]
+	# r = mtr[k + 1][n - k]
+	# mtr[k + 1][n - k] = 0
+	# f[k + 1] -= r * f[k]
+	# f2[k + 1] -= r * f2[k]
 
-	for i in range(0, n + 1):
-		if i != n - k:
-			r = mtr[i][k]
-			mtr[i][k] = 0
-			f[i] -= r * f[n - k]
-			f2[i] -= r * f2[n - k]
-	
-	for i in range(n - k, n):
+	# if k < n - k:
+	# 	for i in range(k, n - k):
+	# 		j = n - i
+	# 		r = mtr[i + 1][j]
+	# 		mtr[i + 1][j] = 0
+	# 		f[i + 1] -= r * f[i]
+	# 		f2[i + 1] -= r * f2[i]
+	# elif k > n - k: # to do
+	# 	for i in range(n - k, k, -1):
+	# 		j = n - i
+	# 		r = mtr[i - 1][j]
+	# 		mtr[i - 1][j] = 0
+	# 		f[i - 1] -= r * f[i]
+	# 		f2[i - 1] -= r * f2[i]
+
+	for i in range(k, n):
 		j = n - i
 		r = mtr[i + 1][j]
 		mtr[i + 1][j] = 0
+		if j != k:
+			mtr[i + 1][k] -= r * mtr[i][k]
 		f[i + 1] -= r * f[i]
 		f2[i + 1] -= r * f2[i]
 
@@ -139,10 +148,20 @@ def alg(mtr, f, f2, n, k):
 		j = n - i
 		r = mtr[i - 1][j]
 		mtr[i - 1][j] = 0
+		if j != k:
+			mtr[i - 1][k] -= r * mtr[i][k]
 		f[i - 1] -= r * f[i]
 		f2[i - 1] -= r * f2[i]
+
+	for i in range(0, n + 1):
+		if i != n - k:
+			r = mtr[i][k]
+			mtr[i][k] = 0
+			f[i] -= r * f[n - k]
+			f2[i] -= r * f2[n - k]
+
+	return 1
 
 
 if __name__ == "__main__":
 	main()
-

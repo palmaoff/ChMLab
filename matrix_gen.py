@@ -8,12 +8,12 @@ def generate_matrix():
 
     for matrix_size in MATRIX_SIZES:
 
-        # setting k value for string and column
-        k = random.randint(0, matrix_size - 1)
-
         for value_range in VALUE_RANGES:
 
-            with open(f"gen_matrix_{matrix_size}_{value_range}", "w") as file:
+            # setting k value for string and column
+            k = random.randint(0, matrix_size - 1)
+
+            with open(f"tests/gen_matrix_{matrix_size}_{value_range}", "w") as file:
                 for i in range(matrix_size):
                     row = []
                     for j in range(matrix_size):
